@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>生成导航图标</title>
+</head>
+<body>
+<canvas id="c" width="200" height="200" style="display:none"></canvas>
+<script>
+const canvas = document.getElementById('c')
+const ctx = canvas.getContext('2d')
+
+function download(filename) {
+  const a = document.createElement('a')
+  a.download = filename
+  a.href = canvas.toDataURL('image/png')
+  a.click()
+}
+
+function clear() {
+  ctx.clearRect(0, 0, 200, 200)
+}
+
+/* ── 图标1：new.png（新品上架） ── */
+function drawNew() {
+  clear()
+  // 橙红渐变圆形背景
+  const g1 = ctx.createRadialGradient(100, 85, 10, 100, 100, 100)
+  g1.addColorStop(0, '#FF6B35')
+  g1.addColorStop(1, '#C0392B')
+  ctx.beginPath()
+  ctx.arc(100, 100, 96, 0, Math.PI * 2)
+  ctx.fillStyle = g1
+  ctx.fill()
+
+  // 白色描边
+  ctx.beginPath()
+  ctx.arc(100, 100, 96, 0, Math.PI * 2)
+  ctx.strokeStyle = 'rgba(255,255,255,0.4)'
+  ctx.lineWidth = 4
+  ctx.stroke()
+
+  // 顶部小星星装饰
+  ctx.fillStyle = 'rgba(255,255,255,0.6)'
+  for (let [x, y, r] of [[60,52,6],[140,48,5],[155,80,4]]) {
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fill()
+  }
+
+  // "NEW" 主文字
+  ctx.fillStyle = '#FFFFFF'
+  ctx.font = 'bold 70px Arial'
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.shadowColor = 'rgba(0,0,0,0.25)'
+  ctx.shadowBlur = 6
+  ctx.fillText('NEW', 100, 100)
+  ctx.shadowBlur = 0
+
+  // 底部小标签
+  ctx.fillStyle = 'rgba(255,255,255,0.25)'
+  ctx.beginPath()
+  ctx.roundRect(50, 145, 100, 28, 14)
+  ctx.fill()
+  ctx.fillStyle = '#fff'
+  ctx.font = 'bold 16px Arial'
+  ctx.fillText('新品上架', 100, 159)
+}
+
+/* ── 图标2：timelimit.png（限时特惠） ── */
+function drawTimeLimit() {
+  clear()
+  // 金橙渐变圆形背景
+  const g2 = ctx.createRadialGradient(100, 85, 10, 100, 100, 100)
+  g2.addColorStop(0, '#F7C948')
+  g2.addColorStop(1, '#E67E22')
+  ctx.beginPath()
+  ctx.arc(100, 100, 96, 0, Math.PI * 2)
+  ctx.fillStyle = g2
+  ctx.fill()
+
+  // 白色描边
+  ctx.beginPath()
+  ctx.arc(100, 100, 96, 0, Math.PI * 2)
+  ctx.strokeStyle = 'rgba(255,255,255,0.4)'
+  ctx.lineWidth = 4
+  ctx.stroke()
+
+  // 时钟表盘
+  ctx.beginPath()
+  ctx.arc(100, 88, 46, 0, Math.PI * 2)
+  ctx.fillStyle = 'rgba(255,255,255,0.20)'
+  ctx.fill()
+  ctx.beginPath()
+  ctx.arc(100, 88, 46, 0, Math.PI * 2)
+  ctx.strokeStyle = '#fff'
+  ctx.lineWidth = 5
+  ctx.stroke()
+
+  // 时钟指针
+  ctx.strokeStyle = '#fff'
+  ctx.lineCap = 'round'
+  // 时针
+  ctx.lineWidth = 6
+  ctx.beginPath(); ctx.moveTo(100, 88); ctx.lineTo(100, 62); ctx.stroke()
+  // 分针
+  ctx.lineWidth = 4
+  ctx.beginPath(); ctx.moveTo(100, 88); ctx.lineTo(120, 88); ctx.stroke()
+  // 中心点
+  ctx.beginPath(); ctx.arc(100, 88, 5, 0, Math.PI*2)
+  ctx.fillStyle = '#fff'; ctx.fill()
+
+  // 底部"限时特惠"标签
+  ctx.fillStyle = 'rgba(255,255,255,0.25)'
+  ctx.beginPath()
+  ctx.roundRect(38, 147, 124, 28, 14)
+  ctx.fill()
+  ctx.fillStyle = '#fff'
+  ctx.font = 'bold 16px Arial'
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillText('限时特惠', 100, 161)
+}
+
+// 生成并自动下载
+drawNew()
+setTimeout(() => { download('new.png'); }, 300)
+setTimeout(() => { drawTimeLimit(); download('timelimit.png'); }, 800)
+</script>
+</body>
+</html>
+

@@ -226,12 +226,12 @@
 					...topCategories,
 					{
 						name: '新品上架',
-						icon: '/static/images/product2.jpg',
+						icon: '/static/images/new.png',
 						type: 'new'
 					},
 					{
-						name: '限时优惠',
-						icon: '/static/images/product4.webp',
+						name: '限时特惠',
+						icon: '/static/images/timelimit.png',
 						type: 'sale'
 					}
 				]
