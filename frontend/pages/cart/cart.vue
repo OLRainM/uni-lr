@@ -1,4 +1,4 @@
-<template>
+﻿<template>
 	<view class="cart-page">
 		<view v-if="cartList.length > 0">
 			<!-- 购物车列表 -->
@@ -103,7 +103,7 @@
 		if (n.includes('藏红花'))  return LOCAL_IMAGES[2]
 		if (n.includes('雪莲'))    return LOCAL_IMAGES[3]
 		if (n.includes('红虫草') || n.includes('礼盒')) return LOCAL_IMAGES[1]
-		if (n.includes('红景天'))  return '/static/images/product5.jpg'
+		if (n.includes('红景天'))  return '/static/images/product5.png'
 		// 其余按序号轮换
 		return LOCAL_IMAGES[idx % LOCAL_IMAGES.length]
 	}

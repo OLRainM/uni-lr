@@ -1,4 +1,4 @@
-<template>
+﻿<template>
 	<view class="product-list-page">
 		<!-- 搜索栏 -->
 		<view class="search-bar">
@@ -268,7 +268,7 @@
 					if (name.includes('藏红花')) return '/static/images/product3.jpg'
 					if (name.includes('雪莲')) return '/static/images/product4.webp'
 					if (name.includes('红虫草') || name.includes('礼盒')) return '/static/images/product2.jpg'
-					if (name.includes('红景天')) return '/static/images/product5.jpg'
+					if (name.includes('红景天')) return '/static/images/product5.png'
 					// 其余按序号轮换
 					return localImages[index % localImages.length]
 				}

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
 	<view class="index-page">
 		<!-- 轮播图 -->
 		<view class="swiper-container">
@@ -198,7 +198,7 @@
 		if (n.includes('冬虫夏草') || n.includes('虫草')) return '/static/images/product1.jpg'
 		if (n.includes('藏红花'))                          return '/static/images/product3.jpg'
 		if (n.includes('雪莲'))                            return '/static/images/product4.webp'
-		if (n.includes('红景天'))                          return '/static/images/product5.jpg'
+		if (n.includes('红景天'))                          return '/static/images/product5.png'
 		if (n.includes('红虫草') || n.includes('礼盒'))    return '/static/images/product2.jpg'
 		// 其余分类按名称首字母轮换
 		return '/static/images/product2.jpg'
