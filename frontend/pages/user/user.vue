@@ -1,4 +1,4 @@
-<template>
+﻿<template>
 	<view class="user-page">
 		<!-- 用户信息卡片 -->
 		<view class="user-card" @click="handleAvatarClick">
@@ -266,8 +266,8 @@
 
 	const handleAbout = () => {
 		uni.showModal({
-			title: '关于金诃藏药',
-			content: '金诃藏药股份有限公司起源于1992年，注册地为青海西宁，总部及生产基地位于西宁生物科技产业园，营销中心位于上海。\n\n公司以"弘扬藏医药，造福全人类"为企业使命，以"生命痊力，金诃藏药"为口号，传承藏医药千年智慧，贡献高原极度生命力，致力成为中国健康事业的标杆企业。',
+			title: '关于金珂',
+			content: '金珂股份有限公司起源于1992年，注册地为青海西宁，总部及生产基地位于西宁生物科技产业园，营销中心位于上海。\n\n公司以"弘扬藏医药，造福全人类"为企业使命，以"生命痊力，金珂"为口号，传承藏医药千年智慧，贡献高原极度生命力，致力成为中国健康事业的标杆企业。',
 			showCancel: false,
 			confirmText: '知道了'
 		})
@@ -309,7 +309,7 @@
 				} else if (res.tapIndex === 1) {
 					uni.showModal({
 						title: '版本信息',
-						content: '当前版本：v1.0.0\n发布日期：2025年\n\n金诃藏药商城小程序',
+						content: '当前版本：v1.0.0\n发布日期：2025年\n\n金珂商城小程序',
 						showCancel: false,
 						confirmText: '知道了'
 					})

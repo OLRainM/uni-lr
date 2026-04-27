@@ -40,10 +40,10 @@
 			</view>
 			<view class="brand-content">
 				<view class="brand-logo-row">
-					<text class="brand-logo-text">生命痊力·金诃藏药</text>
+					<text class="brand-logo-text">生命痊力·金珂</text>
 					<text class="brand-founded">创立于 1992 年</text>
 				</view>
-				<text class="brand-desc">金诃藏药股份有限公司起源于1992年成立的青海省藏药制剂中心，注册地为青海西宁。青海总部、生产基地位于西宁生物科技产业园，管理总部、营销中心位于上海，研发中心位于山东济南，互联网医院位于四川成都。</text>
+				<text class="brand-desc">金珂股份有限公司起源于1992年成立的青海省藏药制剂中心，注册地为青海西宁。青海总部、生产基地位于西宁生物科技产业园，管理总部、营销中心位于上海，研发中心位于山东济南，互联网医院位于四川成都。</text>
 				<text class="brand-desc brand-desc-second">公司以"弘扬藏医药，造福全人类"为企业使命，传承藏医药千年智慧，贡献高原极度生命力，力争成为中国健康事业的标杆企业！</text>
 				<view class="brand-tags">
 					<text class="brand-tag">千年传承</text>
@@ -155,25 +155,39 @@
 		}
 	}
 	
+	// 本地兜底轮播图（使用现有商品图）
+	const fallbackBanners = [
+		{ image: '/static/images/product1.jpg', link: '' },
+		{ image: '/static/images/product2.jpg', link: '' },
+		{ image: '/static/images/product3.jpg', link: '' }
+	]
+
+	// 判断图片是否有效（非外链占位图）
+	const isValidImage = (url) => {
+		if (!url) return false
+		if (url.includes('yzcdn.cn') || url.includes('placeholder') || url.includes('via.placeholder')) return false
+		return true
+	}
+
 	// 加载轮播图
 	const loadBanners = async () => {
 		try {
 			const res = await getBannerList()
 			if (res && res.length > 0) {
-				bannerList.value = res.map(item => ({
+				const mapped = res.map((item, idx) => ({
 					id: item.id,
-					image: item.image || '/static/images/product1.jpg',
+					// 后端图片无效时，用本地兜底图片
+					image: isValidImage(item.image) ? item.image : fallbackBanners[idx % fallbackBanners.length].image,
 					link: item.link || ''
 				}))
+				bannerList.value = mapped
+			} else {
+				// 后端无数据，直接用本地图
+				bannerList.value = fallbackBanners
 			}
 		} catch (e) {
 			console.error('加载轮播图失败:', e)
-			// 使用本地图片作为默认 banner
-			bannerList.value = [
-				{ image: '/static/images/banner1.jpg', link: '' },
-				{ image: '/static/images/banner2.jpg', link: '' },
-				{ image: '/static/images/banner3.jpg', link: '' }
-			]
+			bannerList.value = fallbackBanners
 		}
 	}
 	
