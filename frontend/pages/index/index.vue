@@ -155,11 +155,11 @@
 		}
 	}
 	
-	// 本地兜底轮播图（使用现有商品图）
+	// 本地兜底轮播图（品牌宣传横幅）
 	const fallbackBanners = [
-		{ image: '/static/images/product1.jpg', link: '' },
-		{ image: '/static/images/product2.jpg', link: '' },
-		{ image: '/static/images/product3.jpg', link: '' }
+		{ image: '/static/images/banner1.png', link: '' },
+		{ image: '/static/images/banner2.png', link: '' },
+		{ image: '/static/images/banner3.png', link: '' }
 	]
 
 	// 判断图片是否有效（非外链占位图）
