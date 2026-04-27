@@ -192,25 +192,35 @@
 	}
 	
 	// 加载分类（构建快捷导航）
+	// 按分类名称关键词匹配本地图标
+	const getCategoryIcon = (name) => {
+		const n = name || ''
+		if (n.includes('冬虫夏草') || n.includes('虫草')) return '/static/images/product1.jpg'
+		if (n.includes('藏红花'))                          return '/static/images/product3.jpg'
+		if (n.includes('雪莲'))                            return '/static/images/product4.webp'
+		if (n.includes('红景天'))                          return '/static/images/product5.jpg'
+		if (n.includes('红虫草') || n.includes('礼盒'))    return '/static/images/product2.jpg'
+		// 其余分类按名称首字母轮换
+		return '/static/images/product2.jpg'
+	}
+
 	const loadCategories = async () => {
 		try {
 			const categories = await getProductCategories()
 			if (categories && categories.length > 0) {
-				// 只取前6个分类
-				const topCategories = categories.slice(0, 6).map(item => {
-					// 只使用有效的http/https图片URL，否则使用默认图片
-					let iconUrl = '/static/images/product2.jpg'
-					if (item.icon && (item.icon.startsWith('http://') || item.icon.startsWith('https://'))) {
-						iconUrl = item.icon
-					}
+				// 只取前5个分类（为新品、优惠留出位置）
+				const topCategories = categories.slice(0, 5).map(item => {
 					return {
 						name: item.name,
-						icon: iconUrl,
+						// 优先使用后端有效图片，否则按名称关键词匹配本地图标
+						icon: (item.icon && (item.icon.startsWith('http://') || item.icon.startsWith('https://')))
+							? item.icon
+							: getCategoryIcon(item.name),
 						type: 'category',
 						value: item.id.toString()
 					}
 				})
-				
+
 				// 添加新品和优惠
 				navList.value = [
 					...topCategories,
@@ -407,6 +417,9 @@
 		height: 100rpx;
 		border-radius: 50%;
 		margin-bottom: 10rpx;
+		object-fit: cover;
+		border: 2rpx solid #f0e6d0;
+		box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.10);
 	}
 
 	.nav-text {
