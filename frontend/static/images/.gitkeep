@@ -1,0 +1,23 @@
+# 静态图片资源目录
+
+## 需要添加的图片资源
+
+### Tabbar 图标
+- home.png (首页图标)
+- home-active.png (首页激活图标)
+- product.png (商品图标)
+- product-active.png (商品激活图标)
+- cart.png (购物车图标)
+- cart-active.png (购物车激活图标)
+- user.png (个人中心图标)
+- user-active.png (个人中心激活图标)
+
+### 品牌图片
+- brand-bg.jpg (品牌背景图)
+
+### 空状态图片
+- empty-cart.png (空购物车)
+- empty-order.png (空订单)
+- empty-address.png (空地址)
+
+> 注意：请将实际图片放入此目录

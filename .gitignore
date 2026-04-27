@@ -1,0 +1,130 @@
+# ============================================================
+# 藏药商城小程序 .gitignore
+# 保护数据库密码、密钥等敏感信息，排除构建产物和本地文件
+# ============================================================
+
+# ============================================================
+# 【核心敏感文件 - 绝不上传】
+# ============================================================
+
+# 后端：含数据库密码/JWT密钥/Admin密钥的配置文件
+backend/src/main/resources/application.yml
+backend/src/main/resources/application-local.yml
+backend/src/main/resources/application-prod.yml
+backend/src/main/resources/application-dev.yml
+
+# 前端：微信小程序私有配置（含本地路径、调试配置）
+frontend/project.private.config.json
+
+# 环境变量文件（所有层级）
+.env
+.env.local
+.env.*.local
+**/.env
+**/.env.local
+**/.env.*.local
+
+# ============================================================
+# 后端构建产物
+# ============================================================
+backend/target/
+backend/logs/
+backend/*.log
+backend-run.log
+
+# Maven wrapper（保留 .mvn 目录但忽略本地生成物）
+!backend/.mvn/wrapper/maven-wrapper.jar
+!backend/.mvn/wrapper/maven-wrapper.properties
+
+# ============================================================
+# 前端构建产物 & 依赖
+# ============================================================
+
+# 依赖目录（不上传，通过 npm install 还原）
+node_modules/
+**/node_modules/
+
+# uni-app 编译输出
+frontend/dist/
+frontend/unpackage/
+
+# admin（旧 Vue 项目）构建产物
+admin/dist/
+admin/node_modules/
+
+# ============================================================
+# IDE / 编辑器 配置
+# ============================================================
+
+# IntelliJ IDEA / WebStorm
+.idea/
+**/.idea/
+*.iws
+*.iml
+*.ipr
+
+# VS Code（个人配置不上传，项目级配置可保留）
+.vscode/
+**/.vscode/
+
+# Eclipse / STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+/nbproject/private/
+/nbbuild/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# ============================================================
+# 操作系统文件
+# ============================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ============================================================
+# 日志文件
+# ============================================================
+*.log
+logs/
+**/logs/
+
+# ============================================================
+# 临时文件 & 测试工具
+# ============================================================
+
+# 本地临时脚本（Python/批处理调试脚本）
+backend/*.py
+backend/*.bat
+*.bat
+
+# 数据库文件
+*.db
+*.sqlite
+*.sql.bak
+
+# ============================================================
+# 微信小程序相关
+# ============================================================
+
+# 微信开发者工具：本地私有配置（含不校验域名等本地开关）
+frontend/project.private.config.json
+
+# 微信小程序上传密钥（如有）
+*.keystore
+*.jks
+uploadPrivateKey.key
+

@@ -1,0 +1,86 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: tibetan-medicine-api
+  
+  # 数据源配置 (使用 Druid 连接池)
+  # ⚠️  复制此文件为 application.yml，填入真实数据库信息
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://YOUR_DB_HOST:3306/tibetan_medicine?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: YOUR_DB_USERNAME
+    password: YOUR_DB_PASSWORD
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+  
+  # 文件上传配置
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
+  
+  # Jackson配置
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+
+# MyBatis Plus配置
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  mapper-locations: classpath*:/mapper/**/*.xml
+
+# JWT配置
+# ⚠️ 生产环境请替换为随机长字符串
+jwt:
+  secret: YOUR_JWT_SECRET_KEY_REPLACE_THIS
+  expiration: 604800000  # 7天（毫秒）
+  header: Authorization
+  prefix: Bearer
+
+# 商家后台配置
+admin:
+  # ⚠️ 登录秘钥，生产环境请修改为复杂随机字符串
+  secret-key: YOUR_ADMIN_SECRET_KEY_REPLACE_THIS
+  # adminWeb 相对于后端项目根目录的路径
+  web-path: ../adminWeb
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.tibetan.medicine: DEBUG
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n'
+  file:
+    name: logs/tibetan-medicine.log
+
+# 分页配置
+pagehelper:
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+

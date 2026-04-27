@@ -1,0 +1,909 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "藏药小程序API",
+    "description": "藏药电商小程序后端API接口文档",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/api",
+      "description": "本地开发环境"
+    }
+  ],
+  "tags": [
+    {
+      "name": "用户模块",
+      "description": "用户登录、信息管理"
+    },
+    {
+      "name": "商品模块",
+      "description": "商品浏览、搜索、分类"
+    },
+    {
+      "name": "购物车模块",
+      "description": "购物车管理"
+    },
+    {
+      "name": "订单模块",
+      "description": "订单管理"
+    },
+    {
+      "name": "地址模块",
+      "description": "收货地址管理"
+    },
+    {
+      "name": "优惠券模块",
+      "description": "优惠券领取和使用"
+    },
+    {
+      "name": "支付模块",
+      "description": "支付功能（Mock）"
+    },
+    {
+      "name": "知识库模块",
+      "description": "藏药知识库"
+    },
+    {
+      "name": "轮播图模块",
+      "description": "首页轮播图"
+    },
+    {
+      "name": "文件上传",
+      "description": "图片上传（Mock）"
+    }
+  ],
+  "paths": {
+    "/user/login": {
+      "post": {
+        "tags": ["用户模块"],
+        "summary": "用户登录",
+        "description": "微信小程序登录（Mock版本）",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "description": "微信登录code"
+                  }
+                },
+                "required": ["code"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/info": {
+      "get": {
+        "tags": ["用户模块"],
+        "summary": "获取用户信息",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/update": {
+      "post": {
+        "tags": ["用户模块"],
+        "summary": "更新用户信息",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nickname": {"type": "string"},
+                  "phone": {"type": "string"},
+                  "avatar": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/product/list": {
+      "get": {
+        "tags": ["商品模块"],
+        "summary": "商品列表",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "in": "query",
+            "schema": {"type": "integer", "default": 1}
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {"type": "integer", "default": 10}
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "schema": {"type": "integer"}
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "schema": {"type": "string"}
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": {"type": "integer"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/detail/{id}": {
+      "get": {
+        "tags": ["商品模块"],
+        "summary": "商品详情",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "integer"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/product/categories": {
+      "get": {
+        "tags": ["商品模块"],
+        "summary": "商品分类",
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/product/recommend": {
+      "get": {
+        "tags": ["商品模块"],
+        "summary": "推荐商品",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {"type": "integer", "default": 10}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/cart/list": {
+      "get": {
+        "tags": ["购物车模块"],
+        "summary": "购物车列表",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/cart/add": {
+      "post": {
+        "tags": ["购物车模块"],
+        "summary": "添加到购物车",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "productId": {"type": "integer"},
+                  "spec": {"type": "string"},
+                  "quantity": {"type": "integer"}
+                },
+                "required": ["productId", "quantity"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/cart/update": {
+      "post": {
+        "tags": ["购物车模块"],
+        "summary": "更新购物车",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {"type": "integer"},
+                  "quantity": {"type": "integer"}
+                },
+                "required": ["id", "quantity"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/cart/delete": {
+      "post": {
+        "tags": ["购物车模块"],
+        "summary": "删除购物车商品",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {"type": "integer"}
+                  }
+                },
+                "required": ["ids"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/cart/clear": {
+      "post": {
+        "tags": ["购物车模块"],
+        "summary": "清空购物车",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/order/create": {
+      "post": {
+        "tags": ["订单模块"],
+        "summary": "创建订单",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/order/list": {
+      "get": {
+        "tags": ["订单模块"],
+        "summary": "订单列表",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {
+            "name": "pageNum",
+            "in": "query",
+            "schema": {"type": "integer", "default": 1}
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {"type": "integer", "default": 10}
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {"type": "integer"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/order/detail/{id}": {
+      "get": {
+        "tags": ["订单模块"],
+        "summary": "订单详情",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "integer"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/order/cancel/{id}": {
+      "post": {
+        "tags": ["订单模块"],
+        "summary": "取消订单",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "integer"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/order/confirm/{id}": {
+      "post": {
+        "tags": ["订单模块"],
+        "summary": "确认收货",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "integer"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/order/delete/{id}": {
+      "post": {
+        "tags": ["订单模块"],
+        "summary": "删除订单",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "integer"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/order/count": {
+      "get": {
+        "tags": ["订单模块"],
+        "summary": "订单统计",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/address/list": {
+      "get": {
+        "tags": ["地址模块"],
+        "summary": "地址列表",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/address/add": {
+      "post": {
+        "tags": ["地址模块"],
+        "summary": "添加地址",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddressRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/address/update": {
+      "post": {
+        "tags": ["地址模块"],
+        "summary": "更新地址",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddressRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/address/delete/{id}": {
+      "post": {
+        "tags": ["地址模块"],
+        "summary": "删除地址",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "integer"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/address/setDefault/{id}": {
+      "post": {
+        "tags": ["地址模块"],
+        "summary": "设置默认地址",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "integer"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/coupon/list": {
+      "get": {
+        "tags": ["优惠券模块"],
+        "summary": "可领取优惠券列表",
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/coupon/my": {
+      "get": {
+        "tags": ["优惠券模块"],
+        "summary": "我的优惠券",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {"type": "string"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/coupon/receive": {
+      "post": {
+        "tags": ["优惠券模块"],
+        "summary": "领取优惠券",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "couponId": {"type": "integer"}
+                },
+                "required": ["couponId"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/coupon/use": {
+      "post": {
+        "tags": ["优惠券模块"],
+        "summary": "使用优惠券",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userCouponId": {"type": "integer"}
+                },
+                "required": ["userCouponId"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/payment/create": {
+      "post": {
+        "tags": ["支付模块"],
+        "summary": "创建支付（Mock）",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "orderId": {"type": "integer"},
+                  "paymentMethod": {"type": "string"}
+                },
+                "required": ["orderId", "paymentMethod"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/payment/status/{paymentId}": {
+      "get": {
+        "tags": ["支付模块"],
+        "summary": "查询支付状态（Mock）",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/payment/notify": {
+      "post": {
+        "tags": ["支付模块"],
+        "summary": "支付回调（Mock）",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/knowledge/list": {
+      "get": {
+        "tags": ["知识库模块"],
+        "summary": "知识列表",
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/knowledge/detail/{id}": {
+      "get": {
+        "tags": ["知识库模块"],
+        "summary": "知识详情",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "integer"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/banner/list": {
+      "get": {
+        "tags": ["轮播图模块"],
+        "summary": "轮播图列表",
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/upload/image": {
+      "post": {
+        "tags": ["文件上传"],
+        "summary": "上传单图（Mock）",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/upload/images": {
+      "post": {
+        "tags": ["文件上传"],
+        "summary": "批量上传（Mock）",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "code": {"type": "integer"},
+          "message": {"type": "string"},
+          "data": {"type": "object"}
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "code": {"type": "integer"},
+          "message": {"type": "string"},
+          "data": {
+            "type": "object",
+            "properties": {
+              "token": {"type": "string"},
+              "userInfo": {"type": "object"}
+            }
+          }
+        }
+      },
+      "UserInfoResponse": {
+        "type": "object",
+        "properties": {
+          "code": {"type": "integer"},
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {"type": "integer"},
+              "nickName": {"type": "string"},
+              "avatar": {"type": "string"},
+              "phone": {"type": "string"}
+            }
+          }
+        }
+      },
+      "ProductListResponse": {
+        "type": "object",
+        "properties": {
+          "code": {"type": "integer"},
+          "data": {
+            "type": "object",
+            "properties": {
+              "total": {"type": "integer"},
+              "pageNum": {"type": "integer"},
+              "pageSize": {"type": "integer"},
+              "list": {"type": "array"}
+            }
+          }
+        }
+      },
+      "OrderCreateRequest": {
+        "type": "object",
+        "properties": {
+          "goods": {"type": "array"},
+          "addressId": {"type": "integer"},
+          "couponId": {"type": "integer"},
+          "remark": {"type": "string"}
+        },
+        "required": ["goods", "addressId"]
+      },
+      "AddressRequest": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "integer"},
+          "name": {"type": "string"},
+          "phone": {"type": "string"},
+          "province": {"type": "string"},
+          "city": {"type": "string"},
+          "district": {"type": "string"},
+          "detail": {"type": "string"},
+          "isDefault": {"type": "boolean"}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TabBar 图标生成器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+        
+        .icons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .icon-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s;
+        }
+        
+        .icon-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-color: #8B4513;
+        }
+        
+        .icon-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .icon-preview {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        
+        .preview-item {
+            text-align: center;
+        }
+        
+        .preview-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+        }
+        
+        canvas {
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        canvas:hover {
+            border-color: #8B4513;
+            transform: scale(1.05);
+        }
+        
+        .download-btn {
+            background: #8B4513;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+        
+        .download-btn:hover {
+            background: #6d3410;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139,69,19,0.3);
+        }
+        
+        .download-all {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px 36px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 30px;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(102,126,234,0.3);
+        }
+        
+        .download-all:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102,126,234,0.4);
+        }
+        
+        .instructions {
+            background: #e7f5ff;
+            border-left: 4px solid #1c7ed6;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 8px;
+        }
+        
+        .instructions h3 {
+            color: #1c7ed6;
+            margin-bottom: 15px;
+        }
+        
+        .instructions ol {
+            margin-left: 20px;
+            color: #495057;
+            line-height: 1.8;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .success-message {
+            background: #d3f9d8;
+            border-left: 4px solid #51cf66;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            color: #2b8a3e;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 TabBar 图标生成器</h1>
+        <p class="subtitle">一键生成藏药小程序所需的所有图标</p>
+        
+        <div class="icons-grid">
+            <!-- 首页图标 -->
+            <div class="icon-card">
+                <div class="icon-title">🏠 首页图标 (Home)</div>
+                <div class="icon-preview">
+                    <div class="preview-item">
+                        <canvas id="home-normal" width="81" height="81"></canvas>
+                        <div class="preview-label">未选中</div>
+                    </div>
+                    <div class="preview-item">
+                        <canvas id="home-active" width="81" height="81"></canvas>
+                        <div class="preview-label">选中</div>
+                    </div>
+                </div>
+                <button class="download-btn" onclick="downloadIcon('home')">下载首页图标</button>
+            </div>
+            
+            <!-- 分类图标 -->
+            <div class="icon-card">
+                <div class="icon-title">📊 分类图标 (Category)</div>
+                <div class="icon-preview">
+                    <div class="preview-item">
+                        <canvas id="category-normal" width="81" height="81"></canvas>
+                        <div class="preview-label">未选中</div>
+                    </div>
+                    <div class="preview-item">
+                        <canvas id="category-active" width="81" height="81"></canvas>
+                        <div class="preview-label">选中</div>
+                    </div>
+                </div>
+                <button class="download-btn" onclick="downloadIcon('category')">下载分类图标</button>
+            </div>
+            
+            <!-- 购物车图标 -->
+            <div class="icon-card">
+                <div class="icon-title">🛒 购物车图标 (Cart)</div>
+                <div class="icon-preview">
+                    <div class="preview-item">
+                        <canvas id="cart-normal" width="81" height="81"></canvas>
+                        <div class="preview-label">未选中</div>
+                    </div>
+                    <div class="preview-item">
+                        <canvas id="cart-active" width="81" height="81"></canvas>
+                        <div class="preview-label">选中</div>
+                    </div>
+                </div>
+                <button class="download-btn" onclick="downloadIcon('cart')">下载购物车图标</button>
+            </div>
+            
+            <!-- 我的图标 -->
+            <div class="icon-card">
+                <div class="icon-title">👤 我的图标 (User)</div>
+                <div class="icon-preview">
+                    <div class="preview-item">
+                        <canvas id="user-normal" width="81" height="81"></canvas>
+                        <div class="preview-label">未选中</div>
+                    </div>
+                    <div class="preview-item">
+                        <canvas id="user-active" width="81" height="81"></canvas>
+                        <div class="preview-label">选中</div>
+                    </div>
+                </div>
+                <button class="download-btn" onclick="downloadIcon('user')">下载我的图标</button>
+            </div>
+        </div>
+        
+        <button class="download-all" onclick="downloadAll()">⬇️ 一键下载全部 8 个图标</button>
+        
+        <div class="success-message" id="successMessage">
+            ✅ 图标已下载！请将下载的图标文件复制到项目的 <code>src/static/tabbar/</code> 目录
+        </div>
+        
+        <div class="instructions">
+            <h3>📝 使用说明</h3>
+            <ol>
+                <li>点击上方按钮下载所需的图标文件</li>
+                <li>将下载的所有图标文件（8个）复制到项目目录：<code>src/static/tabbar/</code></li>
+                <li>确保文件名正确：<code>home.png</code>, <code>home-active.png</code> 等</li>
+                <li>刷新微信开发者工具（<kbd>Ctrl</kbd> + <kbd>B</kbd>）</li>
+                <li>查看底部导航栏，图标应该正常显示了！</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const NORMAL_COLOR = '#999999';
+        const ACTIVE_COLOR = '#8B4513';
+        const SIZE = 81;
+        
+        // 绘制首页图标
+        function drawHome(ctx, color) {
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            // 屋顶
+            ctx.beginPath();
+            ctx.moveTo(SIZE/2, 18);
+            ctx.lineTo(18, SIZE/2 - 5);
+            ctx.lineTo(25, SIZE/2 - 5);
+            ctx.lineTo(25, SIZE - 20);
+            ctx.lineTo(SIZE - 25, SIZE - 20);
+            ctx.lineTo(SIZE - 25, SIZE/2 - 5);
+            ctx.lineTo(SIZE - 18, SIZE/2 - 5);
+            ctx.closePath();
+            ctx.fill();
+            
+            // 门
+            ctx.fillStyle = 'white';
+            ctx.globalAlpha = 0.8;
+            ctx.fillRect(SIZE/2 - 8, SIZE - 35, 16, 20);
+            ctx.globalAlpha = 1.0;
+        }
+        
+        // 绘制分类图标
+        function drawCategory(ctx, color) {
+            ctx.fillStyle = color;
+            const gap = 10;
+            const blockSize = 24;
+            
+            for (let i = 0; i < 2; i++) {
+                for (let j = 0; j < 2; j++) {
+                    const x = 20 + i * (blockSize + gap);
+                    const y = 20 + j * (blockSize + gap);
+                    ctx.beginPath();
+                    ctx.roundRect(x, y, blockSize, blockSize, 4);
+                    ctx.fill();
+                }
+            }
+        }
+        
+        // 绘制购物车图标
+        function drawCart(ctx, color) {
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            // 车身
+            ctx.beginPath();
+            ctx.moveTo(22, 28);
+            ctx.lineTo(28, 28);
+            ctx.lineTo(33, 50);
+            ctx.lineTo(60, 50);
+            ctx.lineTo(63, 38);
+            ctx.lineTo(63, 30);
+            ctx.lineTo(32, 30);
+            ctx.stroke();
+            
+            // 手柄
+            ctx.beginPath();
+            ctx.moveTo(28, 28);
+            ctx.lineTo(23, 18);
+            ctx.stroke();
+            
+            // 轮子
+            ctx.beginPath();
+            ctx.arc(38, 58, 4, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(55, 58, 4, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        // 绘制用户图标
+        function drawUser(ctx, color) {
+            ctx.fillStyle = color;
+            
+            // 头部
+            ctx.beginPath();
+            ctx.arc(SIZE/2, 30, 13, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 身体
+            ctx.beginPath();
+            ctx.ellipse(SIZE/2, 58, 22, 16, 0, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        // 生成图标
+        function generateIcon(canvasId, iconType, color) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            
+            // 清空画布
+            ctx.clearRect(0, 0, SIZE, SIZE);
+            
+            // 绘制图标
+            switch(iconType) {
+                case 'home':
+                    drawHome(ctx, color);
+                    break;
+                case 'category':
+                    drawCategory(ctx, color);
+                    break;
+                case 'cart':
+                    drawCart(ctx, color);
+                    break;
+                case 'user':
+                    drawUser(ctx, color);
+                    break;
+            }
+        }
+        
+        // 下载单个图标类型
+        function downloadIcon(type) {
+            // 下载未选中状态
+            const normalCanvas = document.getElementById(`${type}-normal`);
+            downloadCanvas(normalCanvas, `${type}.png`);
+            
+            // 延迟一点下载选中状态，避免浏览器阻止多次下载
+            setTimeout(() => {
+                const activeCanvas = document.getElementById(`${type}-active`);
+                downloadCanvas(activeCanvas, `${type}-active.png`);
+            }, 200);
+            
+            showSuccess();
+        }
+        
+        // 下载所有图标
+        function downloadAll() {
+            const icons = ['home', 'category', 'cart', 'user'];
+            let delay = 0;
+            
+            icons.forEach(type => {
+                setTimeout(() => {
+                    const normalCanvas = document.getElementById(`${type}-normal`);
+                    downloadCanvas(normalCanvas, `${type}.png`);
+                }, delay);
+                delay += 300;
+                
+                setTimeout(() => {
+                    const activeCanvas = document.getElementById(`${type}-active`);
+                    downloadCanvas(activeCanvas, `${type}-active.png`);
+                }, delay);
+                delay += 300;
+            });
+            
+            showSuccess();
+        }
+        
+        // 下载 Canvas
+        function downloadCanvas(canvas, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        // 显示成功消息
+        function showSuccess() {
+            const message = document.getElementById('successMessage');
+            message.style.display = 'block';
+            setTimeout(() => {
+                message.style.display = 'none';
+            }, 5000);
+        }
+        
+        // 初始化所有图标
+        function init() {
+            const icons = ['home', 'category', 'cart', 'user'];
+            
+            icons.forEach(type => {
+                generateIcon(`${type}-normal`, type, NORMAL_COLOR);
+                generateIcon(`${type}-active`, type, ACTIVE_COLOR);
+            });
+        }
+        
+        // 页面加载完成后初始化
+        window.onload = init;
+    </script>
+</body>
+</html>
