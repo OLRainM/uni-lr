@@ -107,11 +107,29 @@
 	import { onPullDownRefresh } from '@dcloudio/uni-app'
 	import { getBannerList, getKnowledgeList, getRecommendProducts, getProductCategories } from '@/api/index.js'
 
-	// 轮播图数据
-	const bannerList = ref([])
+	// 本地兜底数据（页面初始化时立即显示，不等接口）
+	const defaultBanners = [
+		{ image: '/static/images/banner1.png', link: '' },
+		{ image: '/static/images/banner2.png', link: '' },
+		{ image: '/static/images/banner3.png', link: '' }
+	]
 
-	// 快捷导航
-	const navList = ref([])
+	const defaultNavList = [
+		{ name: '冬虫夏草', icon: '/static/images/product1.jpg',  type: 'category', value: '1' },
+		{ name: '藏红花',   icon: '/static/images/product3.jpg',  type: 'category', value: '2' },
+		{ name: '雪莲花',   icon: '/static/images/product4.webp', type: 'category', value: '3' },
+		{ name: '红景天',   icon: '/static/images/product5.png',  type: 'category', value: '4' },
+		{ name: '红虫草',   icon: '/static/images/product2.jpg',  type: 'category', value: '5' },
+		{ name: '藏灵芝',   icon: '/static/images/product2.jpg',  type: 'category', value: '6' },
+		{ name: '新品上架', icon: '/static/images/new.png',       type: 'new' },
+		{ name: '限时特惠', icon: '/static/images/timelimit.png', type: 'sale' }
+	]
+
+	// 轮播图数据（立即用本地图初始化，避免空白等待）
+	const bannerList = ref([...defaultBanners])
+
+	// 快捷导航（立即用兜底数据初始化，接口成功后再覆盖）
+	const navList = ref([...defaultNavList])
 
 	// 藏药知识
 	const knowledgeList = ref([])
@@ -155,43 +173,35 @@
 		}
 	}
 	
-	// 本地兜底轮播图（品牌宣传横幅）
-	const fallbackBanners = [
-		{ image: '/static/images/banner1.png', link: '' },
-		{ image: '/static/images/banner2.png', link: '' },
-		{ image: '/static/images/banner3.png', link: '' }
-	]
+	// 本地兜底轮播图（与初始值保持一致）
+	const fallbackBanners = defaultBanners
 
-	// 判断图片是否有效（非外链占位图）
+	// 判断图片是否有效（排除外链占位图）
 	const isValidImage = (url) => {
 		if (!url) return false
 		if (url.includes('yzcdn.cn') || url.includes('placeholder') || url.includes('via.placeholder')) return false
 		return true
 	}
 
-	// 加载轮播图
+	// 加载轮播图（失败时保持初始的本地兜底图）
 	const loadBanners = async () => {
 		try {
 			const res = await getBannerList()
 			if (res && res.length > 0) {
 				const mapped = res.map((item, idx) => ({
 					id: item.id,
-					// 后端图片无效时，用本地兜底图片
 					image: isValidImage(item.image) ? item.image : fallbackBanners[idx % fallbackBanners.length].image,
 					link: item.link || ''
 				}))
 				bannerList.value = mapped
-			} else {
-				// 后端无数据，直接用本地图
-				bannerList.value = fallbackBanners
 			}
+			// 后端无数据时保持初始兜底，不做覆盖
 		} catch (e) {
+			// 接口失败时保持初始兜底，不做覆盖
 			console.error('加载轮播图失败:', e)
-			bannerList.value = fallbackBanners
 		}
 	}
-	
-	// 加载分类（构建快捷导航）
+
 	// 按分类名称关键词匹配本地图标
 	const getCategoryIcon = (name) => {
 		const n = name || ''
@@ -200,7 +210,6 @@
 		if (n.includes('雪莲'))                            return '/static/images/product4.webp'
 		if (n.includes('红景天'))                          return '/static/images/product5.png'
 		if (n.includes('红虫草') || n.includes('礼盒'))    return '/static/images/product2.jpg'
-		// 其余分类按名称首字母轮换
 		return '/static/images/product2.jpg'
 	}
 
@@ -208,35 +217,24 @@
 		try {
 			const categories = await getProductCategories()
 			if (categories && categories.length > 0) {
-				// 只取前5个分类（为新品、优惠留出位置）
-				const topCategories = categories.slice(0, 5).map(item => {
-					return {
-						name: item.name,
-						// 优先使用后端有效图片，否则按名称关键词匹配本地图标
-						icon: (item.icon && (item.icon.startsWith('http://') || item.icon.startsWith('https://')))
-							? item.icon
-							: getCategoryIcon(item.name),
-						type: 'category',
-						value: item.id.toString()
-					}
-				})
-
-				// 添加新品和优惠
+				// 只取前6个分类（图标区固定8格：6分类+新品+限时）
+				const topCategories = categories.slice(0, 6).map(item => ({
+					name: item.name,
+					icon: (item.icon && (item.icon.startsWith('http://') || item.icon.startsWith('https://')))
+						? item.icon
+						: getCategoryIcon(item.name),
+					type: 'category',
+					value: item.id.toString()
+				}))
 				navList.value = [
 					...topCategories,
-					{
-						name: '新品上架',
-						icon: '/static/images/new.png',
-						type: 'new'
-					},
-					{
-						name: '限时特惠',
-						icon: '/static/images/timelimit.png',
-						type: 'sale'
-					}
+					{ name: '新品上架', icon: '/static/images/new.png',       type: 'new' },
+					{ name: '限时特惠', icon: '/static/images/timelimit.png', type: 'sale' }
 				]
 			}
+			// 后端无数据时保持初始兜底 defaultNavList，不做覆盖
 		} catch (e) {
+			// 接口失败时保持初始兜底，不做覆盖
 			console.error('加载分类失败:', e)
 		}
 	}
